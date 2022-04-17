@@ -11,8 +11,8 @@ node_modules
 # next.js
 /.next/
 /out/
-.next.config.js
-.eslintrc.json
+.next.config
+.eslintrc
 # production
 /build
 
