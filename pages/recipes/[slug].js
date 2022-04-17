@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { useState } from "react";
 import {
   SanityClient, urlFor, usePreviewSubscription, PortableText
@@ -20,9 +19,7 @@ const recipesQuery = `*[_type == "recipe" && slug.current == $slug][0]{
   instructions
 }`
 
-export default function OneRecipe({data,preview}) {
-  const router = useRouter()
-  
+export default function OneRecipe({data,preview}) {  
   const {data:recipe} = usePreviewSubscription(recipesQuery,{
     params:{slug:data.recipe?.slug.current},
     initialData: data,
@@ -30,22 +27,22 @@ export default function OneRecipe({data,preview}) {
   })
   const [likes,setLikes] = useState(data?.recipe?.likes)
 
+  
+  const addLike = async () => {
+    const res = await fetch("/api/handle-like", {
+      method: "POST",
+      body: JSON.stringify({ _id: recipe._id }),
+    }).catch((error) => console.log(error));
 
-  const addLikes = async () => {
-    const res = await fetch("/api/handle-like",{
-      method:"POST",
-      body: JSON.stringify({_id:recipe._id}) 
-    }).catch((error)=>console.log(error))
+    const data = await res.json();
 
-    const data = await res.json()
-    setLikes(data.likes)
-
-  }
+    setLikes(data.likes);
+  };
   
   return (
     <article className="recipe">
       <h1>{recipe.name}</h1>
-      <button className="like-button" onClick={addLikes}>{likes} likes</button>
+      <button className="like-button" onClick={addLike}>{likes} likes</button>
       <main className="content">
         <img src={urlFor(recipe?.mainImage).url()} alt={recipe.name} />
         <div className="breakdown">
