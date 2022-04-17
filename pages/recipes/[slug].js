@@ -21,7 +21,7 @@ const recipesQuery = `*[_type == "recipe" && slug.current == $slug][0]{
 
 export default function OneRecipe({ data, preview }) {
   if (!data) return <div>Loading...</div>;
-  const { data: recipe } = usePreviewSubscription(recipeQuery, {
+  const { data: recipe } = usePreviewSubscription(recipesQuery, {
     params: { slug: data.recipe?.slug.current },
     initialData: data,
     enabled: preview,
